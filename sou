@@ -1,0 +1,100 @@
+#!/bin/bash
+#################################################################################
+#    Copyright (C) 2010 by  Jorge Ivan Andres Contreras Pereira - JIACP         #
+#    jiacontrerasp@jiacp.com                                                    #
+#                                                                               #
+#    This program is free software; you can redistribute it and#or modify       #
+#    it under the terms of the GNU General Public License as published by       #
+#    the Free Software Foundation; either version 2 of the License, or          #
+#    (at your option) any later version.                                        #
+#                                                                               #
+#    This program is distributed in the hope that it will be useful,            #
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of             #
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              #
+#    GNU General Public License for more details.                               #
+#                                                                               #
+#    You should have received a copy of the GNU General Public License          #
+#    along with this program; if not, write to the                              #
+#    Free Software Foundation, Inc.,                                            #
+#    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.                  #
+#################################################################################
+
+# Sou Radio Stream from the command line
+
+lockfile=sou.lock
+ChannelUsed=0
+
+# if ( set -o noclobber; echo "$$" > "$lockfile") 2> /dev/null;
+# then
+#     trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT
+# 
+#     rm -f "$lockfile"
+#     trap - INT TERM EXIT
+
+SERVICE='mplayer'
+
+if [ "$#" == "0" ] ; then
+    echo -e "Para optener ayuda use el argumento --help"
+fi 
+    
+    for param in "$@"
+    do
+      PreParam=`echo "${param}"  | cut -d= -f1`
+      PostParam=`echo "${param}"  | cut -d= -f2`
+       
+      if [ "$PreParam" == "--help" ] ; then
+	  echo -e "Herramienta para escuchar emisoras en red\n \n -- Parametros -- \nURL --url \nArchivo Lista --filelist \nFormato --format" 
+	  echo -e "\n \nEjemplos de uso: \n--Descargar desde una URL \nyoutube --url=http://www.youtube.com/watch?v=zn33Ku90ODc \n--Descargar desde un archivo \nyoutube --filelist=archivo.txt --format=37" 
+	  echo -e "\n \nAdvertencia: \nEl uso de dicha herramienta es personal, no somos responsables de los fines y propósitos que lleve al uso del mismo" 
+      fi
+
+      if [ "$PreParam" == "--version" ] ; then
+	  echo "Sou 0.5 - Copyright (C) 2010 by  Jorge Ivan Andres Contreras Pereira"
+      fi
+
+      if [ "$PreParam" == "--channel" ] ; then
+	 Channel="${PostParam}"
+	 ChannelUsed=1
+      fi
+    done
+
+  if [ $ChannelUsed == 1 ] ; then
+    
+    case $PostParam in
+      1) URLChannel="mms://66.165.172.171/cocarcol?MSWMExt=.asf";
+      break;;
+      2) URLChannel="mms://66.165.172.171/cowradio?MSWMExt=.asf";
+      break;; 
+      3) URLChannel="mms://66.165.172.171/co40p?MSWMExt=.asf";
+      break;; 
+      4) URLChannel="mms://66.165.172.171/covalle?MSWMExt=.asf";
+      break;; 
+      5) URLChannel="mms://66.165.172.171/cocarcol?MSWMExt=.asf";
+      break;; 
+      6) URLChannel="mms://66.165.172.171/cocarcol?MSWMExt=.asf";
+      break;; 
+      7) URLChannel="mms://66.165.172.171/cocarcol?MSWMExt=.asf";
+      break;; 
+      8) URLChannel="mms://66.165.172.171/cocarcol?MSWMExt=.asf";
+      break;; 
+      9) URLChannel="mms://66.165.172.171/cocarcol?MSWMExt=.asf";
+      break;; 
+      10) URLChannel="mms://66.165.172.171/cocarcol?MSWMExt=.asf";
+      break;;  
+      *) echo "$OptionFormat es una opcion invalida.";
+      echo "Presiona una tecla para continuar...";
+      read foo;;
+    esac
+  
+  if ps ax | grep -v grep | grep $SERVICE > /dev/null
+  then
+    echo "Sou ya se está ejecutando, cambiando de Canal"
+    killall mplayer
+    mplayer "${URLChannel}" < /dev/null &
+    echo "${Channel}" > sou.run
+else
+    echo "Iniciando Sou"
+    mplayer "${URLChannel}" < /dev/null &
+    echo "${Channel}" > sou.run
+fi  
+  fi

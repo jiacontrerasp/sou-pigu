@@ -1,0 +1,53 @@
+#!/bin/bash
+#################################################################################
+#    Copyright (C) 2010 by  Jorge Ivan Andres Contreras Pereira - JIACP         #
+#    jiacontrerasp@jiacp.com                                                    #
+#                                                                               #
+#    This program is free software; you can redistribute it and#or modify       #
+#    it under the terms of the GNU General Public License as published by       #
+#    the Free Software Foundation; either version 2 of the License, or          #
+#    (at your option) any later version.                                        #
+#                                                                               #
+#    This program is distributed in the hope that it will be useful,            #
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of             #
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              #
+#    GNU General Public License for more details.                               #
+#                                                                               #
+#    You should have received a copy of the GNU General Public License          #
+#    along with this program; if not, write to the                              #
+#    Free Software Foundation, Inc.,                                            #
+#    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.                  #
+#################################################################################
+
+# Sou Radio Stream from the command line
+
+lockfile=sou-run.lock
+ChannelUsed=0
+
+# if ( set -o noclobber; echo "$$" > "$lockfile") 2> /dev/null;
+# then
+#     trap 'rm -f "$lockfile"; exit $?' INT TERM EXIT
+# 
+#     rm -f "$lockfile"
+#     trap - INT TERM EXIT
+
+SERVICE='mplayer'
+
+if ps ax | grep -v grep | grep $SERVICE > /dev/null
+  then
+    echo "Sou ya se está ejecutando y está transmitiendo"
+
+else
+    echo "Comprobando actividad"
+    while read line
+      do 
+      
+	if [ "$line" == "0" ] ; then
+	echo "El equipo se encuenta en Stand-by"
+	else
+	echo "Reiniciando transmicion"
+	./sou --channel="${line}"
+	fi
+      
+      done < sou.run
+fi
