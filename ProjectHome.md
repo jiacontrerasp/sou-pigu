@@ -1,0 +1,1 @@
+Sou client is a radio stream. Written in bash for embedded devices
